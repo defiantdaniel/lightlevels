@@ -1,9 +1,13 @@
 package com.dd.lightlevels;
 
-import com.dd.lightlevels.init.llBlocks;
-import com.dd.lightlevels.init.llItems;
+import net.minecraftforge.common.config.Configuration;
+
+import com.dd.lightlevels.init.ConfigHandler;
+import com.dd.lightlevels.init.LLBlocks;
+import com.dd.lightlevels.init.LLItems;
 import com.dd.lightlevels.ref.ModInfo;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -12,23 +16,29 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = ModInfo.MODID, name = ModInfo.Name)
-public class lightlevels {
+@Mod(modid = ModInfo.MODID, name = ModInfo.Name, version = ModInfo.Version)
+public class LightLevels {
 	
 	@Instance
-	public static lightlevels instance;
+	public static LightLevels instance;
 	
 	@SidedProxy (serverSide = "com.dd.lightlevels.CommonProxy", clientSide = "com.dd.lightlevels.client.ClientProxy")
 	public static CommonProxy proxy;
 	
+	public static Configuration config;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		
-		llBlocks.initialize();
-		llBlocks.register();
+		ConfigHandler.ConfigSetup(event);
 		
-		llItems.initialize();
-		llItems.register();
+		LLBlocks.initialize();
+		LLBlocks.register();
+		
+		LLItems.initialize();
+		LLItems.register();
+		
+		FMLCommonHandler.instance().bus().register(new TickEventHandler());
 		
 	}
 	
