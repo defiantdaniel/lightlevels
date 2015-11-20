@@ -20,6 +20,9 @@ public class TickEventHandler {
 	// Sets up the the source for damage to players as "LightLevel". This only shows the source, it isn't the actual damage.
 	public static DamageSource LightLevel = (new DamageSource("LightLevel"))
 			.setDamageBypassesArmor();
+	
+	public static String Timer;
+	public static int GuiLightLevel;
 
 	@SubscribeEvent
 	public void LightLevelTick(TickEvent.PlayerTickEvent event) {
@@ -71,13 +74,22 @@ public class TickEventHandler {
 				int LightTimer = event.player.getEntityData().getInteger(
 						EntityTimer);
 				
+				Timer = LightTimer + "/" + CorrectLr.getTimer();
+				GuiLightLevel = CorrectLr.getLightLevel();
+				
 				// Checks if the current LightTimer is equal to the the one in the config (ie. is the time up).
-				if (LightTimer == CorrectLr.getTimer()) {
+				if (LightTimer >= CorrectLr.getTimer()) {
 					// Applies damage specified for this light level in the config, to the player.
 					event.player.attackEntityFrom(LightLevel,
 							CorrectLr.getDmg());
 					// Executes the command for this light level from the config.
-					CmdMng.executeCommand(Server, CorrectLr.getCmd());
+					if (!CorrectLr.getCmd().isEmpty()) {
+						CmdMng.executeCommand(Server, CorrectLr.getCmd());
+					}
+					// To correct the timer if a lower value was set in the config.
+					event.player.getEntityData().setInteger(
+							"LightTimer" + CorrectLr.getIndex(),
+							CorrectLr.getTimer());					
 				} else {			
 					if (LightTimer >= 0) {
 						// Sets the LightTimer on the player for this light level to +1.
@@ -88,6 +100,10 @@ public class TickEventHandler {
 				// Goes through each LightRange in the config reduce the timers on light ranges the player isn't in.
 				LightRangeEntity_TimerReduction(event, CorrectLr.getIndex());
 			} else {
+				if (CorrectLr.getTimer() == -1) {
+					Timer = "0/0";
+				}
+				GuiLightLevel = CorrectLr.getLightLevel();
 				// Goes through each LightRange in the config reduce the timers on light ranges the player isn't in.
 				LightRangeEntity_TimerReduction(event, CorrectLr.getIndex());
 			}

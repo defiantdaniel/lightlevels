@@ -15,9 +15,16 @@ public class ConfigHandler {
 	// Turns the mod off in water. Will not reduce timers set before getting in water. Basically pauses the mod.
 	public static boolean WaterFlag = false;
 	
+	public static String GuiPos = "Right Bottom";
+	
+	public static int GuiOffsetX = 2;
+	public static int GuiOffsetY = 2;
+	
+	public static int GuiType = 2;
+	
 	// Sets the defaults for Light Ranges, Damage, Command, Timer, and the index.
 	public static LightRange[] DefaultValues = new LightRange[] {
-			  new LightRange(new int[] {0,5}, 1.0f, "", 10, 1),
+			  new LightRange(new int[] {0,5}, 1.0f, "", 30, 1),
 			  new LightRange(new int[] {5,7}, 1.0f, "", -1, 2),
 			  new LightRange(new int[] {7,9}, 1.0f, "", -1, 3),
 			  new LightRange(new int[] {9,11}, 1.0f, "", -1, 4),
@@ -35,6 +42,12 @@ public class ConfigHandler {
 		// Sets whitelist, and dims.
 		DimsWhiteList = config.get(Configuration.CATEGORY_GENERAL, "DimsWhiteList", DimsWhiteList, "If true, vars in the \"Dims\" list will act as a white list. Otherwise dimension ids put there will turn the mod off in those dimensions. [Default = false]").getBoolean(DimsWhiteList);
 		Dims = config.get(Configuration.CATEGORY_GENERAL, "Dims", Dims, "Dimensions defined by id (ex. Overworld is 0) that this mod will act (or not act) in depending on whether it's a whitelist or blacklist.").getIntList();
+
+		// Sets Gui Positions and Type
+		GuiPos = config.get("Gui", "GuiPostion", GuiPos, "description").getString();
+		GuiOffsetX = config.get("Gui", "GuiOffsetX", GuiOffsetX, "description").getInt();
+		GuiOffsetY = config.get("Gui", "GuiOffsetY", GuiOffsetY, "description").getInt();
+		GuiType = config.get("Gui", "GuiType", GuiType, "description").getInt();
 		
 		// Sets Water flag
 		WaterFlag = config.get(Configuration.CATEGORY_GENERAL, "WaterFlag", WaterFlag, "If true, the mod will pause when the player enters water. Otherwise the mod will keep tracking light levels as normal. So the player will need to place light sources. [Default = false]").getBoolean(WaterFlag);		
@@ -47,7 +60,7 @@ public class ConfigHandler {
 			// System.out.println(DefaultValues[i-1].getLrCmd()); // Debug code.
 			
 			// Sets light range, dmg, command, and timer based on default values array.
-			int[] LightRangeTmp = config.get(LightHeader, ("LightRange" + i), DefaultValues[i-1].getLr(), ("The items in \"light " + i + "\" will effect the player only in this light range. The mod will take effect when the players light level is greater than the first number, and less than the second (MUST be smaller number first, and greater number second). You should be careful overlaping these. [Accepted values 0-15. Anything else will break the mod]")).getIntList();
+			int[] LightRangeTmp = config.get(LightHeader, ("LightRange" + i), DefaultValues[i-1].getLr(), ("The items in \"light " + i + "\" will effect the player only in this light range. The mod will take effect when the players light level is greater than the first number, and less than the second (MUST be smaller number first, and greater number second). You should be careful overlapping these. [Accepted values 0-15. Anything else will break the mod]")).getIntList();
 			float LightRangeDmgTmp = (float)config.get(LightHeader, ("LightRangeDmg" + i), DefaultValues[i-1].getLrDmg(), ("Damage to do to the player. [Default = 1.0]")).getDouble(DefaultValues[i-1].getLrDmg());
 			String LightRangeCmdTmp = config.get(LightHeader, ("LightRangeCmd" + i), DefaultValues[i-1].getLrCmd(), ("Command line command to execute.")).getString(); 
 			int LightRangeTimerTmp = config.get(LightHeader, ("LightRangeTimer" + i), DefaultValues[i-1].getLrTimer(), ("The amount of time (in Seconds) the player must spend in this light level to initiate an action. (Set to -1 to disable actions for this light level)")).getInt(DefaultValues[i-1].getLrTimer());

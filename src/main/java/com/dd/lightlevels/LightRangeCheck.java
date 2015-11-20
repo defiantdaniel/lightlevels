@@ -1,6 +1,7 @@
 package com.dd.lightlevels;
 
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import com.dd.lightlevels.init.ConfigHandler;
 import com.dd.lightlevels.init.LightRange;
@@ -11,6 +12,7 @@ public class LightRangeCheck {
 	
 	// Return var.
 	boolean LightTest;
+	int LightLevel;
 	
 	// Temp vars for values from the config.
 	float TmpDmg;
@@ -29,6 +31,11 @@ public class LightRangeCheck {
 	
 	// Needs the event passed to it.
 	public void setEvent(TickEvent.PlayerTickEvent event) {
+		
+		float y = event.player.getBrightness(1.0f);
+		
+		this.LightLevel = (int)Math.round(2 * (30 * y / (3 * y + 1)));
+		
 		// Loops through every light range in the Default Values array.
 		for (LightRange Range : ConfigHandler.DefaultValues) {
 			
@@ -40,6 +47,7 @@ public class LightRangeCheck {
 			
 			double LowRange = (1.0f - f1) / (f1 * 3.0f + 1.0f);
 			double HighRange = (1.0f - f2) / (f2 * 3.0f + 1.0f);
+			
 			// -----------------
 			
 			/*
@@ -93,6 +101,10 @@ public class LightRangeCheck {
 	
 	public int getIndex () {
 		return this.Index;
+	}	
+	
+	public int getLightLevel () {
+		return this.LightLevel;
 	}	
 	
 }

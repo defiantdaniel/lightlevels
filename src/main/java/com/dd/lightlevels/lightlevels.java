@@ -1,5 +1,7 @@
 package com.dd.lightlevels;
 
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 
 import com.dd.lightlevels.init.ConfigHandler;
@@ -49,6 +51,6 @@ public class LightLevels {
 	
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		
+		MinecraftForge.EVENT_BUS.register(new LLGui(Minecraft.getMinecraft()));		
 	}	
 }
